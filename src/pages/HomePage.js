@@ -1,38 +1,35 @@
 import React from "react";
-import {
-  Box,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Text,
-} from "@chakra-ui/react";
+import { Box } from "@chakra-ui/layout";
 import Layout from "../components/Layout";
+import PageList from "../components/PageList";
+import InfoBox from "../components/InfoBox";
 
 const HomePage = () => {
   return (
     <Layout>
       <Box as="main" mt="40px">
-        <Tabs>
-          <TabList>
-            <Tab textTransform="uppercase">Home</Tab>
-            <Tab textTransform="uppercase">Contests</Tab>
-            <Tab textTransform="uppercase">Rankings</Tab>
-          </TabList>
-
-          <TabPanels>
-            <TabPanel>
-              <Text>Home</Text>
-            </TabPanel>
-            <TabPanel>
-              <Text>Contests</Text>
-            </TabPanel>
-            <TabPanel>
-              <Text>Ranking</Text>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <PageList>
+          <Box mt="20px">
+            <InfoBox
+              title="New problems"
+              infos={[
+                "prob1 - Problem 1",
+                "prob2 - Problem 2",
+                "prob3 - Problem 3",
+                "prob4 - Problem 4",
+              ]}
+            />
+            <InfoBox
+              title="Top coders"
+              infos={[
+                "a - 16 problems",
+                "b - 14 problems",
+                "c - 12 problems",
+                "d - 10 problems",
+              ]}
+            />
+          </Box>
+        </PageList>
       </Box>
     </Layout>
   );

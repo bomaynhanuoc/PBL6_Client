@@ -1,15 +1,8 @@
 import React from "react";
-import {
-  Heading,
-  VStack,
-  Box,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  InputGroup,
-  InputLeftElement,
-} from "@chakra-ui/react";
+import { Heading, VStack, Box } from "@chakra-ui/layout";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
+import { Button } from "@chakra-ui/button";
 import {
   BsFillPersonFill,
   BsLockFill,
@@ -24,8 +17,8 @@ function AuthForm({ title, isRegister }) {
       </Heading>
       <Box w="60%" padding="20px 30px">
         <Box as="form">
-          <FormControl id="usernameOrEmail" mb="20px">
-            <FormLabel fontSize="18px">Username or email</FormLabel>
+          <FormControl id="username" mb="20px">
+            <FormLabel fontSize="18px">Username</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
@@ -33,7 +26,7 @@ function AuthForm({ title, isRegister }) {
               />
               <Input
                 type="text"
-                placeholder="Your username or email"
+                placeholder="Your username"
                 borderColor="gray.500"
               />
             </InputGroup>
@@ -68,7 +61,14 @@ function AuthForm({ title, isRegister }) {
               </InputGroup>
             </FormControl>
           )}
-          <Button minW="100%" bg="blue.300" fontSize="18px">
+          <Button
+            minW="100%"
+            bg="blue.300"
+            fontSize="18px"
+            _hover={{
+              backgroundColor: "blue.500",
+            }}
+          >
             {isRegister ? "Register" : "Login"}
           </Button>
         </Box>

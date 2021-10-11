@@ -1,13 +1,12 @@
 import React from "react";
-import { HStack, Box, Link } from "@chakra-ui/react";
-import { Link as ReachLink, useLocation } from "react-router-dom";
+import { HStack, Box, Link } from "@chakra-ui/layout";
+import { Link as ReachLink, NavLink as ReachNavLink } from "react-router-dom";
 import { ROUTERS } from "../constants/routers";
+
+import "./Header.css";
 
 const Header = () => {
   const linkItems = [ROUTERS.LOGIN, ROUTERS.REGISTER];
-  const location = useLocation();
-
-  console.log(location.pathname.slice(1) === linkItems[0].slice(1));
 
   return (
     <header>
@@ -36,7 +35,7 @@ const Header = () => {
                   textDecor="none"
                   textTransform="capitalize"
                   transition="all 0.3s"
-                  as={ReachLink}
+                  as={ReachNavLink}
                   to={`${item}`}
                   _hover={{
                     textDecor: "none",
