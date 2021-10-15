@@ -1,15 +1,26 @@
 import React from "react";
+
 import { Heading, VStack, Box } from "@chakra-ui/layout";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
+import { Spinner } from "@chakra-ui/spinner";
 import {
   BsFillPersonFill,
   BsLockFill,
   BsPersonCheckFill,
 } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
-function AuthForm({ title, isRegister }) {
+function AuthForm({
+  title,
+  isRegister,
+  inputFields,
+  onChange,
+  onSubmit = () => {},
+}) {
+  const loading = useSelector((state) => state.common.loading);
+
   return (
     <VStack w="900px" m="30px auto 0">
       <Heading as="h1" fontSize="38px" fontWeight="bold" mb="20px">
@@ -25,9 +36,15 @@ function AuthForm({ title, isRegister }) {
                 children={<BsFillPersonFill />}
               />
               <Input
+                name="username"
                 type="text"
                 placeholder="Your username"
                 borderColor="gray.500"
+                value={inputFields.username}
+                onChange={onChange}
+                _hover={{
+                  borderColor: "gray.800",
+                }}
               />
             </InputGroup>
           </FormControl>
@@ -39,9 +56,15 @@ function AuthForm({ title, isRegister }) {
                 children={<BsLockFill />}
               />
               <Input
+                name="password"
                 type="password"
                 placeholder="Your password"
                 borderColor="gray.500"
+                value={inputFields.password}
+                onChange={onChange}
+                _hover={{
+                  borderColor: "gray.800",
+                }}
               />
             </InputGroup>
           </FormControl>
@@ -54,9 +77,15 @@ function AuthForm({ title, isRegister }) {
                   children={<BsPersonCheckFill />}
                 />
                 <Input
+                  name="passwordConfirm"
                   type="password"
                   placeholder="Confirm your password"
                   borderColor="gray.500"
+                  value={inputFields.passwordConfirm}
+                  onChange={onChange}
+                  _hover={{
+                    borderColor: "gray.800",
+                  }}
                 />
               </InputGroup>
             </FormControl>
@@ -68,8 +97,16 @@ function AuthForm({ title, isRegister }) {
             _hover={{
               backgroundColor: "blue.500",
             }}
+            disabled={loading}
+            onClick={onSubmit}
           >
-            {isRegister ? "Register" : "Login"}
+            {loading ? (
+              <Spinner size="sm" color="blackAlpha.700" />
+            ) : isRegister ? (
+              "Register"
+            ) : (
+              "Login"
+            )}
           </Button>
         </Box>
       </Box>

@@ -14,12 +14,7 @@ const AppRoutes = () => {
   return (
     <Router>
       <Switch>
-        <RedirectRoute
-          exact
-          path={ROUTERS.HOME}
-          component={HomePage}
-          redirectedPath={ROUTERS.HOME}
-        />
+        <Route exact path={ROUTERS.HOME} component={HomePage} />
         <RedirectRoute
           path={ROUTERS.LOGIN}
           redirectPath={ROUTERS.HOME}

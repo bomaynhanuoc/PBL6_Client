@@ -1,13 +1,12 @@
 import React from "react";
-import { useHistory, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Route, Redirect } from "react-router-dom";
 
-function RedirectRoute({ redirectedPath, ...rest }) {
-  const history = useHistory();
-  const isAuthenticated = false;
+function RedirectRoute({ redirectPath, ...rest }) {
+  const data = useSelector((state) => state.auth.data);
 
-  if (isAuthenticated) {
-    history.push(redirectedPath);
-    return null;
+  if (data && data.username) {
+    return <Redirect to={redirectPath} />;
   }
   return <Route {...rest} />;
 }
