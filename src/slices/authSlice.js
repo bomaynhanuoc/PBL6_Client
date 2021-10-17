@@ -15,7 +15,7 @@ export const registerAccount = createAsyncThunk(
       }
     } catch (error) {
       console.log(error);
-      dispatch(fetchError(error));
+      dispatch(fetchError(error.message));
     }
   }
 );
@@ -27,14 +27,21 @@ export const loginAccount = createAsyncThunk(
       dispatch(fetchStart());
       const response = await login(params);
 
-      if (response) {
+      if (
+        response.data.constructor === Object &&
+        Object.keys(response.data).length > 0
+      ) {
         localStorage.setItem("user", JSON.stringify(response.data));
-        dispatch(fetchSuccess());
+        dispatch(fetchSuccess("Login successfully."));
         return response.data;
+      } else {
+        console.log(response.data);
+        dispatch(fetchError(response.data));
       }
     } catch (error) {
       console.log(error);
-      dispatch(fetchError(error));
+      dispatch(fetchError(error.message));
+      return error.message;
     }
   }
 );
@@ -51,7 +58,7 @@ export const logoutAccount = createAsyncThunk(
       return {};
     } catch (error) {
       console.log(error);
-      dispatch(fetchError(error));
+      dispatch(fetchError(error.message));
     }
   }
 );
