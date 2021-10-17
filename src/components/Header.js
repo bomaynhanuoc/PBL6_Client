@@ -8,26 +8,16 @@ import { ROUTERS } from "../constants/routers";
 
 import "./Header.css";
 import { logoutAccount } from "../slices/authSlice";
-// import { useToast } from "@chakra-ui/toast";
 
 const Header = () => {
   const linkItems = [ROUTERS.LOGIN, ROUTERS.REGISTER];
   const user = useSelector((state) => state.auth.data);
   const loading = useSelector((state) => state.common.loading);
-  const message = useSelector((state) => state.common.message);
   const dispatch = useDispatch();
-  // const toast = useToast();
 
   const handleClick = async () => {
     try {
       await dispatch(logoutAccount({ username: user.username }));
-
-      // toast({
-      //   title: message,
-      //   status: "success",
-      //   duration: 1500,
-      //   position: "top-right",
-      // });
     } catch (error) {
       console.log(error);
     }

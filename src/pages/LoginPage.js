@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import { useHistory } from "react-router";
-
 import { useDispatch } from "react-redux";
 import { loginAccount } from "../slices/authSlice";
 
@@ -10,7 +8,7 @@ import { useToast } from "@chakra-ui/toast";
 
 import Layout from "../components/Layout";
 import AuthForm from "../components/AuthForm";
-import { ROUTERS } from "../constants/routers";
+import useToastInfo from "../hooks/useToastInfo";
 
 function Login() {
   const dispatch = useDispatch();
@@ -19,13 +17,15 @@ function Login() {
     password: "",
   });
   const toast = useToast();
-  const history = useHistory();
+
+  useToastInfo();
 
   const onChange = (e) => {
     setInputFields((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
     if (
       inputFields.username.length === 0 ||
       inputFields.password.length === 0
@@ -34,7 +34,7 @@ function Login() {
         title: "Username or password length must be greater than 0",
         status: "error",
         duration: 2000,
-        position: "top-right",
+        position: "bottom-left",
       });
       setInputFields({
         username: "",
@@ -51,38 +51,7 @@ function Login() {
         })
       );
 
-      // console.log(response.payload);
-      if (response.payload === "Wrong password") {
-        toast({
-          title: "Wrong password.",
-          status: "error",
-          duration: 1500,
-          position: "top-right",
-        });
-        setInputFields({
-          username: "",
-          password: "",
-        });
-      } else if (response.payload === "Account doesn't existed") {
-        toast({
-          title: "Account doesn't existed.",
-          status: "error",
-          duration: 1500,
-          position: "top-right",
-        });
-        setInputFields({
-          username: "",
-          password: "",
-        });
-      } else {
-        toast({
-          title: "Login successfully.",
-          status: "success",
-          duration: 1500,
-          position: "top-right",
-        });
-        history.replace(ROUTERS.HOME);
-      }
+      console.log(response);
     } catch (error) {
       console.log(error);
     }

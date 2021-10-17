@@ -3,8 +3,10 @@ import { Box } from "@chakra-ui/layout";
 import Layout from "../components/Layout";
 import PageList from "../components/PageList";
 import InfoBox from "../components/InfoBox";
+import useToastInfo from "../hooks/useToastInfo";
 
 const HomePage = () => {
+  useToastInfo();
   return (
     <Layout>
       <Box as="main" mt="40px">

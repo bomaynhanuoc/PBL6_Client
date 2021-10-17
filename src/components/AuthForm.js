@@ -4,7 +4,6 @@ import { Heading, VStack, Box } from "@chakra-ui/layout";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
-import { Spinner } from "@chakra-ui/spinner";
 import {
   BsFillPersonFill,
   BsLockFill,
@@ -27,7 +26,7 @@ function AuthForm({
         {title}
       </Heading>
       <Box w="60%" padding="20px 30px">
-        <Box as="form">
+        <Box as="form" onSubmit={onSubmit}>
           <FormControl id="username" mb="20px">
             <FormLabel fontSize="18px">Username</FormLabel>
             <InputGroup>
@@ -98,15 +97,10 @@ function AuthForm({
               backgroundColor: "blue.500",
             }}
             disabled={loading}
-            onClick={onSubmit}
+            isLoading={loading}
+            type="submit"
           >
-            {loading ? (
-              <Spinner size="sm" color="blackAlpha.700" />
-            ) : isRegister ? (
-              "Register"
-            ) : (
-              "Login"
-            )}
+            {isRegister ? "Register" : "Login"}
           </Button>
         </Box>
       </Box>

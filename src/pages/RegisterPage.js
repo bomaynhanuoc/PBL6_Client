@@ -67,21 +67,6 @@ function RegisterPage() {
         });
         history.push(ROUTERS.LOGIN);
       }
-      // const response = await register({
-      //   username: inputFields.username,
-      //   password: inputFields.password,
-      // });
-
-      // if (response.data === "Added Successfully") {
-      //   toast({
-      //     title: "Account created.",
-      //     status: "success",
-      //     duration: 2000,
-      //     position: "top-right",
-      //   });
-      //   dispatch(fetchSuccess());
-      //   history.push(ROUTERS.LOGIN);
-      // }
     } catch (error) {
       console.log(error);
     }
