@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Route, useHistory } from "react-router-dom";
+import isObject from "../utils/isObject";
 
 function RedirectRoute({ redirectPath, ...rest }) {
   const data = useSelector((state) => state.auth.data);
   const history = useHistory();
 
   useEffect(() => {
-    if (data && data.username) {
+    if (data && isObject(data)) {
       history.replace(redirectPath);
     }
   }, [data, history, redirectPath]);

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { login, logout, register } from "../apis/auth";
+import isObject from "../utils/isObject";
 import { fetchError, fetchStart, fetchSuccess } from "./common";
 
 export const registerAccount = createAsyncThunk(
@@ -27,10 +28,7 @@ export const loginAccount = createAsyncThunk(
       dispatch(fetchStart());
       const response = await login(params);
 
-      if (
-        response.data.constructor === Object &&
-        Object.keys(response.data).length > 0
-      ) {
+      if (isObject(response.data)) {
         localStorage.setItem("user", JSON.stringify(response.data));
         dispatch(fetchSuccess("Login successfully."));
         return response.data;
