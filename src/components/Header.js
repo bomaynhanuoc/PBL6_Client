@@ -60,7 +60,7 @@ const Header = () => {
               </Button>
             </HStack>
           ) : (
-            <Box as="ul" display="flex">
+            <Box as="ul" display="flex" listStyleType="none">
               {linkItems.map((item) => (
                 <Box as="li" key={item}>
                   <Link
