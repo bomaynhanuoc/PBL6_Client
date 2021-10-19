@@ -31,15 +31,15 @@ const HomePage = () => {
   function renderContestByTime(timeId) {
     switch (timeId) {
       case 0:
-        return contests.filter(
-          (item) => convertToJsDate(item.time_regist) - new Date() < 0
-        );
+        return contests.filter((item) => {
+          return new Date() - convertToJsDate(item.time_end) > 0;
+        });
       case 1:
         return contests.filter((item) => {
           const registerTime = convertToJsDate(item.time_regist);
-          const startTime = convertToJsDate(item.time_start);
+          const endTime = convertToJsDate(item.time_end);
           const currentDay = new Date();
-          return currentDay - registerTime > 0 && startTime - currentDay > 0;
+          return currentDay - registerTime > 0 && endTime - currentDay > 0;
         });
       case 2:
         return contests.filter(
@@ -73,7 +73,7 @@ const HomePage = () => {
                   <Text mt="20px">Loading...</Text>
                 ) : renderContestByTime(id).length > 0 ? (
                   <Box mt="30px">
-                    <List titles={keys} content={contests} />
+                    <List titles={keys} content={renderContestByTime(id)} />
                   </Box>
                 ) : (
                   <Box mt="30px">No data...</Box>
