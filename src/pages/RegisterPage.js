@@ -12,6 +12,7 @@ import Layout from "../components/Layout";
 import AuthForm from "../components/AuthForm";
 
 import { ROUTERS } from "../constants/routers";
+import useToastInfo from "../hooks/useToastInfo";
 
 function RegisterPage() {
   const history = useHistory();
@@ -23,11 +24,15 @@ function RegisterPage() {
   const toast = useToast();
   const dispatch = useDispatch();
 
+  useToastInfo();
+
   const onChange = (e) => {
     setInputFields((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
     if (
       inputFields.username.length === 0 ||
       inputFields.password.length === 0

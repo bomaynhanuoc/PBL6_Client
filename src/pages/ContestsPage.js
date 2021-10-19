@@ -1,16 +1,22 @@
-import { Box, Text } from "@chakra-ui/layout";
+import { Box, Text, Heading } from "@chakra-ui/layout";
 import React from "react";
 import List from "../components/List";
 import Layout from "../components/Layout";
 import PageList from "../components/PageList";
+import { allContestTabs } from "../constants/allContestTabs";
 
 function ContestsPage() {
   return (
     <Layout>
       <Box as="main" mt="40px">
-        <PageList>
+        <Box mb="20px">
+          <Heading as="h4" fontSize="30px">
+            All contests
+          </Heading>
+        </Box>
+        <PageList tabs={allContestTabs}>
           <Box mt="20px" ml="16px">
-            <Box>
+            {/* <Box>
               <Text as="h4" fontSize="20px" mb="18px">
                 Past contests
               </Text>
@@ -44,7 +50,7 @@ function ContestsPage() {
                   },
                 ]}
               />
-            </Box>
+            </Box> */}
           </Box>
         </PageList>
       </Box>
