@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@chakra-ui/layout";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/table";
+import { formatName } from "../utils";
 
 function List({ titles, blankTitle = 0, content }) {
   const blankHeaderRow = [];
@@ -14,9 +15,11 @@ function List({ titles, blankTitle = 0, content }) {
     <Box>
       <Table>
         <Thead>
-          <Tr>
+          <Tr mb="20px">
             {titles.map((title) => (
-              <Th key={title}>{title}</Th>
+              <Th key={title} fontSize="20px" textTransform="capitalize">
+                {formatName(title)}
+              </Th>
             ))}
             {blankHeaderRow.map((_, idx) => (
               <Th key={idx}></Th>
@@ -27,7 +30,9 @@ function List({ titles, blankTitle = 0, content }) {
           {content.map((item, idx) => (
             <Tr key={idx}>
               {titles.map((title) => (
-                <Td key={title}>{item[title]}</Td>
+                <Td key={title} fontSize="17px">
+                  {item[title]}
+                </Td>
               ))}
               {blankHeaderRow.map((_, idx) => (
                 <Td key={idx}>{item[idx + titleLen]}</Td>

@@ -4,6 +4,7 @@ const ROUTERS = {
   REGISTER: "/register",
   CONTESTS: "/contests",
   PROBLEMS: "/problems",
+  ADMIN: "/admin",
   NOTFOUND: "*",
 };
 

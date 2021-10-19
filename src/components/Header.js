@@ -8,6 +8,7 @@ import { ROUTERS } from "../constants/routers";
 
 import "./Header.css";
 import { logoutAccount } from "../slices/authSlice";
+import { isObject } from "../utils";
 
 const Header = () => {
   const linkItems = [ROUTERS.LOGIN, ROUTERS.REGISTER];
@@ -42,7 +43,7 @@ const Header = () => {
           </Link>
         </Box>
         <Box>
-          {user && user.username ? (
+          {isObject(user) ? (
             <HStack justify="space-between" fontSize="18px">
               <Text mr="10px">Welcome, {user.username}</Text>
               <Button
