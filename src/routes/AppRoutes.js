@@ -6,12 +6,15 @@ import {
   HomePage,
   LoginPage,
   RegisterPage,
-  ContestsPage,
+  ContestDetailPage,
   ProblemsPage,
   AdminPage,
+  ContestStartPage,
+  ContestResultPage,
 } from "../pages/index";
 // import PrivateRoute from "./PrivateRoute";
 import RedirectRoute from "./RedirectRoute";
+import PrivateRoute from "./PrivateRoute";
 import { pathPerRole } from "../utils";
 
 const AppRoutes = () => {
@@ -33,7 +36,21 @@ const AppRoutes = () => {
           component={RegisterPage}
           exact
         />
-        <Route path={ROUTERS.CONTESTS} component={ContestsPage} />
+        <PrivateRoute
+          exact
+          path={`${ROUTERS.CONTEST}/:id`}
+          component={ContestDetailPage}
+        />
+        <PrivateRoute
+          exact
+          path={`${ROUTERS.CONTEST}/:id/start`}
+          component={ContestStartPage}
+        />
+        <PrivateRoute
+          exact
+          path={`${ROUTERS.CONTEST}/:id/result`}
+          component={ContestResultPage}
+        />
         <Route path={ROUTERS.PROBLEMS} component={ProblemsPage} />
         <Route path={ROUTERS.ADMIN} component={AdminPage} />
         {/* <PrivateRoute path={ROUTERS.ADMIN} component={AdminPage} /> */}

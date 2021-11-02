@@ -2,7 +2,7 @@ const ROUTERS = {
   LOGIN: "/login",
   HOME: "/",
   REGISTER: "/register",
-  CONTESTS: "/contests",
+  CONTEST: "/contest",
   PROBLEMS: "/problems",
   ADMIN: "/admin",
   NOTFOUND: "*",

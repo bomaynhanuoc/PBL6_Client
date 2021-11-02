@@ -6,7 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllContest } from "../slices/contestSlice";
 import List from "../components/List";
 import { Tabs, Tab, TabList, TabPanels, TabPanel } from "@chakra-ui/tabs";
-import { convertToJsDate } from "../utils";
+import {
+  checkCurrentContest,
+  checkPastContest,
+  checkUpcomingContest,
+} from "../utils";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -31,19 +35,14 @@ const HomePage = () => {
   function renderContestByTime(timeId) {
     switch (timeId) {
       case 0:
-        return contests.filter((item) => {
-          return new Date() - convertToJsDate(item.time_end) > 0;
-        });
+        return contests.filter((item) => checkPastContest(item.time_end));
       case 1:
-        return contests.filter((item) => {
-          const registerTime = convertToJsDate(item.time_regist);
-          const endTime = convertToJsDate(item.time_end);
-          const currentDay = new Date();
-          return currentDay - registerTime > 0 && endTime - currentDay > 0;
-        });
+        return contests.filter((item) =>
+          checkCurrentContest(item.time_regist, item.time_end)
+        );
       case 2:
-        return contests.filter(
-          (item) => convertToJsDate(item.time_regist) - new Date() > 0
+        return contests.filter((item) =>
+          checkUpcomingContest(item.time_regist)
         );
       default:
         return;

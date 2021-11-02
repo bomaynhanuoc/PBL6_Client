@@ -7,7 +7,7 @@ import isObject from "../utils/isObject";
 function PrivateRoute({ ...rest }) {
   const data = useSelector((state) => state.auth.data);
 
-  if (isObject(data) && data.role === "admin") {
+  if (isObject(data)) {
     return <Route {...rest} />;
   }
 

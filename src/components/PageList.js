@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, Tab, TabList } from "@chakra-ui/tabs";
 import { Link, useLocation } from "react-router-dom";
-import { ROUTERS } from "../constants/routers";
 
 function PageList({ tabs, children }) {
   const location = useLocation();
