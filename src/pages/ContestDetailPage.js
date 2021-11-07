@@ -44,11 +44,10 @@ function ContestDetailPage() {
   });
   const participantsField =
     isObject(contestDetail) &&
-    Object.entries(contestDetail).find(([key, val]) => key === "participants");
+    Object.entries(contestDetail).find(([key]) => key === "participants");
   const allParticipants =
     Array.isArray(participantsField) &&
     participantsField.filter((val) => isObject(val));
-  // console.log(allParticipants);
 
   useEffect(() => {
     dispatch(getContestDetail({ id, token: user.token }));
@@ -81,6 +80,12 @@ function ContestDetailPage() {
 
         if (remainingTime === 0) {
           clearInterval(timeInterval);
+          setTimeToStart({
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+          });
         } else {
           // console.log(remainingTime);
           setTimeToStart(remainingTime);
@@ -125,45 +130,43 @@ function ContestDetailPage() {
                   <Box>
                     <HStack align="flex-start">
                       <Box w="70%" marginBottom="20px">
-                        {Object.entries(contestDetail).map(
-                          ([key, value], id) => {
-                            return (
-                              key.indexOf("link") === -1 &&
-                              key.indexOf("participants") === -1 &&
-                              key.indexOf("id") === -1 && (
-                                <Box
-                                  key={key}
-                                  borderBottom="1px solid var(--chakra-colors-blackAlpha-700)"
-                                  borderTopLeftRadius="lg"
-                                  borderTopRightRadius="lg"
-                                  p="10px 20px"
+                        {Object.entries(contestDetail).map(([key, value]) => {
+                          return (
+                            key.indexOf("link") === -1 &&
+                            key.indexOf("participants") === -1 &&
+                            key.indexOf("id") === -1 && (
+                              <Box
+                                key={key}
+                                borderBottom="1px solid var(--chakra-colors-blackAlpha-700)"
+                                borderTopLeftRadius="lg"
+                                borderTopRightRadius="lg"
+                                p="10px 20px"
+                              >
+                                <Text
+                                  fontSize="22px"
+                                  textTransform="capitalize"
                                 >
-                                  <Text
-                                    fontSize="22px"
-                                    textTransform="capitalize"
-                                  >
-                                    {formatName(key)}
-                                  </Text>
-                                  {Array.isArray(value)
-                                    ? value.map((lang) => (
-                                        <Text
-                                          as="span"
-                                          key={lang}
-                                          _notLast={{
-                                            marginRight: "14px",
-                                          }}
-                                        >
-                                          {lang}
-                                        </Text>
-                                      ))
-                                    : typeof value !== "object" && (
-                                        <Text>{value}</Text>
-                                      )}
-                                </Box>
-                              )
-                            );
-                          }
-                        )}
+                                  {formatName(key)}
+                                </Text>
+                                {Array.isArray(value)
+                                  ? value.map((lang) => (
+                                      <Text
+                                        as="span"
+                                        key={lang}
+                                        _notLast={{
+                                          marginRight: "14px",
+                                        }}
+                                      >
+                                        {lang}
+                                      </Text>
+                                    ))
+                                  : typeof value !== "object" && (
+                                      <Text>{value}</Text>
+                                    )}
+                              </Box>
+                            )
+                          );
+                        })}
                       </Box>
                       <Box
                         w="30%"
@@ -215,8 +218,9 @@ function ContestDetailPage() {
                           contestDetail.time_end
                         ) && (
                           <Box>
-                            {allParticipants.some(
-                              (val) => user.username === Object.keys(val)[0]
+                            {allParticipants.length > 0 &&
+                            Object.keys(allParticipants[0]).some(
+                              (val) => user.username === val
                             ) ? (
                               Object.values(timeToStart).every(
                                 (val) => val === 0
@@ -327,12 +331,14 @@ function ContestDetailPage() {
                             <Thead>
                               <Tr mb="20px">
                                 <Th>Participants</Th>
+                                <Th>Score</Th>
                               </Tr>
                             </Thead>
                             <Tbody>
-                              {Object.keys(val).map((val) => (
-                                <Tr key={val}>
-                                  <Td fontSize="17px">{val}</Td>
+                              {Object.entries(val).map(([key, val]) => (
+                                <Tr key={key} fontSize="17px">
+                                  <Td>{key}</Td>
+                                  <Td>{val}</Td>
                                 </Tr>
                               ))}
                             </Tbody>

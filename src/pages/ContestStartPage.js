@@ -25,21 +25,28 @@ function ContestStartPage() {
     minutes: 0,
     seconds: 0,
   });
-  const participantsField =
-    isObject(contestDetail) &&
-    Object.entries(contestDetail).find(([key]) => key === "participants");
-  const allParticipants =
-    Array.isArray(participantsField) &&
-    participantsField.filter((val) => isObject(val));
-  const isRegistered =
-    Array.isArray(allParticipants) &&
-    allParticipants.some((val) => user.username === Object.keys(val)[0]);
+  const [isRegistered, setIsRegistered] = useState(false);
   const [language, setLanguage] = useState();
   const [result, setResult] = useState();
+
+  // console.log(allParticipants);
 
   useEffect(() => {
     dispatch(getContestDetail({ id, token: user.token }));
   }, [dispatch, id, user.token]);
+
+  useEffect(() => {
+    if (isObject(contestDetail)) {
+      const participantsField = Object.entries(contestDetail).find(
+        ([key]) => key === "participants"
+      );
+      const allParticipants = participantsField.filter((val) => isObject(val));
+      const isRegis = Object.keys(allParticipants[0]).some(
+        (val) => user.username === val
+      );
+      setIsRegistered(isRegis);
+    }
+  }, [contestDetail, user.username]);
 
   useEffect(() => {
     if (isObject(contestDetail)) {
@@ -52,7 +59,6 @@ function ContestStartPage() {
         if (remainingTime === 0) {
           clearInterval(timeInterval);
         } else {
-          // console.log(remainingTime);
           setTimeToEnd(remainingTime);
         }
       }, 1000);
@@ -156,10 +162,7 @@ function ContestStartPage() {
                     </Box>
                   </Box>
                   <Box mt="20px">
-                    {timeToEnd.days === 0 &&
-                    timeToEnd.hours === 0 &&
-                    timeToEnd.minutes === 0 &&
-                    timeToEnd.seconds === 0 ? (
+                    {Object.values(timeToEnd).every((val) => val === 0) ? (
                       <Box as="h6" fontSize="20px" textAlign="center">
                         Contest has done, can not submit
                       </Box>
