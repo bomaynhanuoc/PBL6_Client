@@ -224,10 +224,11 @@ function ContestStartPage() {
                   border="1px solid black"
                   borderRadius="8px"
                 >
-                  {timeToEnd.days === 0 &&
-                  timeToEnd.hours === 0 &&
-                  timeToEnd.minutes === 0 &&
-                  timeToEnd.seconds === 0 ? (
+                  {Object.values(timeToEnd).every((val) => val === 0) ? (
+                    // timeToEnd.days === 0 &&
+                    // timeToEnd.hours === 0 &&
+                    // timeToEnd.minutes === 0 &&
+                    // timeToEnd.seconds === 0
                     <>
                       <Box mb="20px" textAlign="center">
                         <Text fontSize="18px">Time's out</Text>

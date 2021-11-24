@@ -52,8 +52,7 @@ const AppRoutes = () => {
           component={ContestResultPage}
         />
         <Route path={ROUTERS.PROBLEMS} component={ProblemsPage} />
-        <Route path={ROUTERS.ADMIN} component={AdminPage} />
-        {/* <PrivateRoute path={ROUTERS.ADMIN} component={AdminPage} /> */}
+        <PrivateRoute path={ROUTERS.ADMIN} component={AdminPage} />
       </Switch>
     </Router>
   );

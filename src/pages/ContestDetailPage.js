@@ -97,7 +97,6 @@ function ContestDetailPage() {
   }, [contestDetail]);
 
   const handleSignUpContest = async () => {
-    console.log("in");
     await dispatch(
       signUpContest({
         id,

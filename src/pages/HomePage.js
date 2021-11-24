@@ -11,16 +11,26 @@ import {
   checkPastContest,
   checkUpcomingContest,
 } from "../utils";
+import { useHistory } from "react-router";
+import { ROUTERS } from "../constants/routers";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const contests = useSelector((state) => state.contest.contests);
   const loading = useSelector((state) => state.common.loading);
+  const data = useSelector((state) => state.auth.data);
   const [keys, setKeys] = useState([]);
   const [tabId, setTabId] = useState(0);
   const allContestTabs = ["past", "current", "upcoming"];
+  const history = useHistory();
 
   useToastInfo();
+
+  useEffect(() => {
+    if (data.role === "admin") {
+      history.replace(ROUTERS.ADMIN);
+    }
+  }, [history, data]);
 
   useEffect(() => {
     dispatch(getAllContest());
@@ -48,6 +58,8 @@ const HomePage = () => {
         return;
     }
   }
+
+  // console.log(contests);
 
   return (
     <Layout>

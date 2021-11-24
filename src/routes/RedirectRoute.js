@@ -9,6 +9,7 @@ function RedirectRoute({ redirectPath, ...rest }) {
 
   useEffect(() => {
     if (isObject(data)) {
+      console.log(redirectPath);
       history.replace(redirectPath);
     }
   }, [data, history, redirectPath]);

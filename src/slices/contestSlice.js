@@ -18,6 +18,7 @@ export const getAllContest = createAsyncThunk(
       dispatch(fetchStart());
       const response = await getContests();
 
+      console.log(response);
       if (response.data) {
         // console.log(response.data);
         dispatch(fetchSuccess());
