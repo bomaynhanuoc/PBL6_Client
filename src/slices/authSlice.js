@@ -33,7 +33,7 @@ export const loginAccount = createAsyncThunk(
         dispatch(fetchSuccess("Login successfully."));
         return response.data;
       } else {
-        console.log(response.data);
+        console.log(response);
         dispatch(fetchError(response.data));
       }
     } catch (error) {

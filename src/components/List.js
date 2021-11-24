@@ -2,6 +2,8 @@ import React from "react";
 import { Box } from "@chakra-ui/layout";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/table";
 import { formatName } from "../utils";
+import { Link } from "react-router-dom";
+import { ROUTERS } from "../constants/routers";
 
 function List({ titles, blankTitle = 0, content }) {
   const blankHeaderRow = [];
@@ -29,9 +31,15 @@ function List({ titles, blankTitle = 0, content }) {
         <Tbody>
           {content.map((item, idx) => (
             <Tr key={idx}>
-              {titles.map((title) => (
+              {titles.map((title, childId) => (
                 <Td key={title} fontSize="17px">
-                  {item[title]}
+                  {childId === 0 ? (
+                    <Link to={`${ROUTERS.CONTEST}/${item[title]}`}>
+                      {item[title]}
+                    </Link>
+                  ) : (
+                    item[title]
+                  )}
                 </Td>
               ))}
               {blankHeaderRow.map((_, idx) => (

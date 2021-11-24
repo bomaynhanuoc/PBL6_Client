@@ -10,7 +10,7 @@ const useToastInfo = () => {
 
   useEffect(() => {
     if (message) {
-      console.log(message);
+      // console.log(message);
       toast({
         title: message,
         status: "success",
@@ -21,7 +21,7 @@ const useToastInfo = () => {
     }
 
     if (error) {
-      console.log(error);
+      // console.log(error);
       toast({
         title: error,
         status: "error",

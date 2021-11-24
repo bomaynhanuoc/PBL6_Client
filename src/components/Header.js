@@ -1,6 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as ReachLink, NavLink as ReachNavLink } from "react-router-dom";
+import {
+  Link as ReachLink,
+  NavLink as ReachNavLink,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import { HStack, Box, Link, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { Spinner } from "@chakra-ui/spinner";
@@ -15,10 +20,15 @@ const Header = () => {
   const user = useSelector((state) => state.auth.data);
   const loading = useSelector((state) => state.common.loading);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
 
   const handleClick = async () => {
     try {
       await dispatch(logoutAccount({ username: user.username }));
+      if (location.pathname !== ROUTERS.HOME) {
+        history.push(ROUTERS.HOME);
+      }
     } catch (error) {
       console.log(error);
     }

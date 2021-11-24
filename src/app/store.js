@@ -3,6 +3,8 @@ import counterReducer from "../features/counter/counterSlice";
 import commonReducer from "../slices/common";
 import AuthReducer from "../slices/authSlice";
 import ContestReducer from "../slices/contestSlice";
+import SubmitReducer from "../slices/submitSlice";
+import AccountReducer from "../slices/accountSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +12,7 @@ export const store = configureStore({
     common: commonReducer,
     auth: AuthReducer,
     contest: ContestReducer,
+    submit: SubmitReducer,
+    account: AccountReducer,
   },
 });

@@ -1,8 +1,8 @@
 import React from "react";
-import { Box, Text, Heading } from "@chakra-ui/layout";
+import { Box, Heading } from "@chakra-ui/layout";
 import Layout from "../components/Layout";
 import PageList from "../components/PageList";
-import List from "../components/List";
+// import List from "../components/List";
 import { allContestTabs } from "../constants/allContestTabs";
 
 function ProblemsPage() {
