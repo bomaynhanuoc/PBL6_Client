@@ -1,6 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchError, fetchStart, fetchSuccess } from "./common";
-import { addParticipant, getContest, getContests } from "../apis/contest";
+import {
+  addParticipant,
+  getContest,
+  getContests,
+  createContest,
+  updateContest,
+  deleteContest,
+} from "../apis/contest";
 import { isObject } from "../utils/";
 
 const initialState = {
@@ -43,6 +50,60 @@ export const getContestDetail = createAsyncThunk(
       console.log({ error });
       return rejectWithValue(error.message);
       // return error.message;
+    }
+  }
+);
+
+export const addContest = createAsyncThunk(
+  "contest/create",
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await createContest(body);
+
+      if (response.data.includes("Successfully")) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.data);
+      }
+    } catch (error) {
+      console.log({ error });
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateContestByField = createAsyncThunk(
+  "contest/update",
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await updateContest(body);
+
+      if (response.data.includes("Successfully")) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.data);
+      }
+    } catch (error) {
+      console.log({ error });
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const removeContest = createAsyncThunk(
+  "contest/delete",
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await deleteContest(body);
+
+      if (response.data.includes("Successfully")) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.data);
+      }
+    } catch (error) {
+      console.log({ error });
+      return rejectWithValue(error.message);
     }
   }
 );

@@ -1,2 +1,2 @@
 // export const URL = "http://localhost:8000";
-export const URL = "https://be-bmnn.pagekite.me";
+export const URL = "https://be-aibmnn.pagekite.me";

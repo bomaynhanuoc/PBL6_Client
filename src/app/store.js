@@ -5,6 +5,7 @@ import AuthReducer from "../slices/authSlice";
 import ContestReducer from "../slices/contestSlice";
 import SubmitReducer from "../slices/submitSlice";
 import AccountReducer from "../slices/accountSlice";
+import LanguageReducer from "../slices/languageSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     contest: ContestReducer,
     submit: SubmitReducer,
     account: AccountReducer,
+    language: LanguageReducer,
   },
 });

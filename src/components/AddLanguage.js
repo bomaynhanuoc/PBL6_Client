@@ -12,10 +12,15 @@ import { Box } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
-import { Select } from "@chakra-ui/select";
 
-function AddAccount({ isOpen, onClose, handleAccount, oldValue, onChange }) {
-  const isUpdate = +oldValue.id > 0;
+function AddLanguage({
+  isOpen,
+  onClose,
+  selectedLang,
+  onChange,
+  handleLanguage,
+}) {
+  const isUpdate = +selectedLang.id > 0;
 
   return (
     <>
@@ -24,49 +29,48 @@ function AddAccount({ isOpen, onClose, handleAccount, oldValue, onChange }) {
         <ModalContent>
           <ModalHeader>
             {isUpdate ? "Update " : "Add "}
-            account
+            language
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box>
-              {!isUpdate && (
-                <FormControl id="username" mb="20px">
-                  <FormLabel fontSize="18px">Username</FormLabel>
+              {isUpdate && (
+                <FormControl id="id" mb="20px">
+                  <FormLabel fontSize="18px">Id</FormLabel>
                   <Input
-                    name="username"
+                    name="id"
                     type="text"
-                    placeholder="Your username"
                     borderColor="gray.500"
-                    value={oldValue.username}
-                    onChange={onChange}
                     _hover={{
                       borderColor: "gray.800",
                     }}
+                    value={selectedLang.id}
+                    disabled
                   />
                 </FormControl>
               )}
-              <FormControl id="role" mb="30px">
-                <FormLabel fontSize="18px">Role</FormLabel>
-                <Select value={oldValue.role} onChange={onChange}>
-                  <Box as="option" value="admin">
-                    Admin
-                  </Box>
-                  <Box as="option" value="creator">
-                    Creator
-                  </Box>
-                  <Box as="option" value="member">
-                    Member
-                  </Box>
-                </Select>
-              </FormControl>
-              <FormControl id="password" mb="30px">
-                <FormLabel fontSize="18px">Password</FormLabel>
+              <FormControl id="name" mb="30px">
+                <FormLabel fontSize="18px">Language name</FormLabel>
                 <Input
-                  name="password"
-                  type="password"
-                  placeholder="Your password"
+                  name="name"
+                  type="text"
+                  placeholder="Your language name"
                   borderColor="gray.500"
-                  value={oldValue.password}
+                  value={selectedLang.name}
+                  onChange={onChange}
+                  _hover={{
+                    borderColor: "gray.800",
+                  }}
+                />
+              </FormControl>
+              <FormControl id="type" mb="30px">
+                <FormLabel fontSize="18px">Language type</FormLabel>
+                <Input
+                  name="type"
+                  type="text"
+                  placeholder="Your language type"
+                  borderColor="gray.500"
+                  value={selectedLang.type}
                   onChange={onChange}
                   _hover={{
                     borderColor: "gray.800",
@@ -76,7 +80,7 @@ function AddAccount({ isOpen, onClose, handleAccount, oldValue, onChange }) {
             </Box>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="green" onClick={handleAccount}>
+            <Button colorScheme="green" onClick={handleLanguage}>
               {isUpdate ? "Update" : "Add"}
             </Button>
             <Button ml={3} onClick={onClose}>
@@ -89,4 +93,4 @@ function AddAccount({ isOpen, onClose, handleAccount, oldValue, onChange }) {
   );
 }
 
-export default AddAccount;
+export default AddLanguage;

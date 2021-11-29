@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
 
-import { useHistory, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Text, Heading, HStack } from "@chakra-ui/layout";
+import { Button, ButtonGroup } from "@chakra-ui/button";
+import { useToast } from "@chakra-ui/toast";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/tabs";
+import { Table, Tbody, Thead, Tr, Th, Td } from "@chakra-ui/table";
 
 import Layout from "../components/Layout";
+import ConfirmDelete from "../components/ConfirmDelete";
+
 import {
   getContestDetail,
   resetError,
   signUpContest,
+  removeContest,
 } from "../slices/contestSlice";
 import {
   calculateRemainingTime,
@@ -20,14 +27,11 @@ import {
   formatName,
   isObject,
 } from "../utils";
-import { Button } from "@chakra-ui/button";
-import { useToast } from "@chakra-ui/toast";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/tabs";
 import { ROUTERS } from "../constants/routers";
-import { Table, Tbody, Thead, Tr, Th, Td } from "@chakra-ui/table";
 
 function ContestDetailPage() {
   const { id } = useParams();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { contestDetail, loading, error } = useSelector(
     (state) => state.contest
@@ -53,6 +57,10 @@ function ContestDetailPage() {
     dispatch(getContestDetail({ id, token: user.token }));
   }, [dispatch, id, user.token]);
 
+  const admin = location.state ? location.state.isAdmin : false;
+
+  // console.log(admin);
+
   useEffect(() => {
     const showError = async () => {
       if (error) {
@@ -71,30 +79,32 @@ function ContestDetailPage() {
   }, [dispatch, error, toast]);
 
   useEffect(() => {
-    if (isObject(contestDetail)) {
-      const timeInterval = setInterval(() => {
-        const remainingTime = calculateRemainingTime(
-          new Date().getTime(),
-          convertToJsDate(contestDetail.time_start).getTime()
-        );
+    if (!admin) {
+      if (isObject(contestDetail)) {
+        const timeInterval = setInterval(() => {
+          const remainingTime = calculateRemainingTime(
+            new Date().getTime(),
+            convertToJsDate(contestDetail.time_start).getTime()
+          );
 
-        if (remainingTime === 0) {
-          clearInterval(timeInterval);
-          setTimeToStart({
-            days: 0,
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-          });
-        } else {
-          // console.log(remainingTime);
-          setTimeToStart(remainingTime);
-        }
-      }, 1000);
+          if (remainingTime === 0) {
+            clearInterval(timeInterval);
+            setTimeToStart({
+              days: 0,
+              hours: 0,
+              minutes: 0,
+              seconds: 0,
+            });
+          } else {
+            // console.log(remainingTime);
+            setTimeToStart(remainingTime);
+          }
+        }, 1000);
 
-      return () => clearInterval(timeInterval);
+        return () => clearInterval(timeInterval);
+      }
     }
-  }, [contestDetail]);
+  }, [admin, contestDetail]);
 
   const handleSignUpContest = async () => {
     await dispatch(
@@ -106,6 +116,8 @@ function ContestDetailPage() {
 
     await dispatch(getContestDetail({ id }));
   };
+
+  console.log(contestDetail);
 
   return (
     <Layout>
@@ -128,7 +140,7 @@ function ContestDetailPage() {
                 <TabPanel>
                   <Box>
                     <HStack align="flex-start">
-                      <Box w="70%" marginBottom="20px">
+                      <Box w={admin ? "100%" : "70%"} marginBottom="20px">
                         {Object.entries(contestDetail).map(([key, value]) => {
                           return (
                             key.indexOf("link") === -1 &&
@@ -167,156 +179,196 @@ function ContestDetailPage() {
                           );
                         })}
                       </Box>
-                      <Box
-                        w="30%"
-                        ml="20px !important"
-                        p="20px"
-                        border="1px solid black"
-                        borderRadius="8px"
-                        display="flex"
-                        flexDir="column"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        {checkPastContest(contestDetail.time_end) && (
-                          <>
-                            <Box mb="20px">
-                              <Text fontSize="18px">
-                                Contest has been passed, can not register
-                              </Text>
-                            </Box>
-                            <Box>
-                              <Button
-                                p="20px 40px"
-                                fontSize="18px"
-                                w="100%"
-                                onClick={() =>
-                                  history.push(
-                                    `${ROUTERS.CONTEST}/${contestDetail.id}/result`
-                                  )
+                      {admin ? (
+                        <Box
+                          w="30%"
+                          ml="20px !important"
+                          p="20px"
+                          border="1px solid black"
+                          borderRadius="8px"
+                        >
+                          <ButtonGroup flexDir="column" w="100%">
+                            <Button mb="20px" colorScheme="messenger">
+                              Update
+                            </Button>
+                            <ConfirmDelete
+                              selectedItem={contestDetail}
+                              handleDelete={async ({ id }) => {
+                                const response = await dispatch(
+                                  removeContest({
+                                    token: user.token,
+                                    id,
+                                  })
+                                );
+
+                                if (response.payload.includes("Successfully")) {
+                                  toast({
+                                    title: response.payload,
+                                    status: "success",
+                                    duration: 2000,
+                                    position: "bottom-right",
+                                  });
                                 }
-                              >
-                                See result
-                              </Button>
-                              <Button
-                                w="100%"
-                                p="20px 40px"
-                                mt="20px"
-                                fontSize="18px"
-                                onClick={() => {
-                                  history.push(ROUTERS.HOME);
-                                }}
-                              >
-                                Back to see all
-                              </Button>
-                            </Box>
-                          </>
-                        )}
-                        {checkCurrentContest(
-                          contestDetail.time_regist,
-                          contestDetail.time_end
-                        ) && (
-                          <Box>
-                            {allParticipants.length > 0 &&
-                            Object.keys(allParticipants[0]).some(
-                              (val) => user.username === val
-                            ) ? (
-                              Object.values(timeToStart).every(
-                                (val) => val === 0
-                              ) ? (
+
+                                history.replace(ROUTERS.ADMIN);
+                              }}
+                            />
+                          </ButtonGroup>
+                        </Box>
+                      ) : (
+                        <Box
+                          w="30%"
+                          ml="20px !important"
+                          p="20px"
+                          border="1px solid black"
+                          borderRadius="8px"
+                          display="flex"
+                          flexDir="column"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          {checkPastContest(contestDetail.time_end) && (
+                            <>
+                              <Box mb="20px">
+                                <Text fontSize="18px">
+                                  Contest has been passed, can not register
+                                </Text>
+                              </Box>
+                              <Box>
                                 <Button
                                   p="20px 40px"
                                   fontSize="18px"
                                   w="100%"
                                   onClick={() =>
                                     history.push(
-                                      `${ROUTERS.CONTEST}/${id}/start`
+                                      `${ROUTERS.CONTEST}/${contestDetail.id}/result`
                                     )
                                   }
                                 >
-                                  Start
+                                  See result
                                 </Button>
-                              ) : (
+                                <Button
+                                  w="100%"
+                                  p="20px 40px"
+                                  mt="20px"
+                                  fontSize="18px"
+                                  onClick={() => {
+                                    history.push(ROUTERS.HOME);
+                                  }}
+                                >
+                                  Back to see all
+                                </Button>
+                              </Box>
+                            </>
+                          )}
+                          {checkCurrentContest(
+                            contestDetail.time_regist,
+                            contestDetail.time_end
+                          ) && (
+                            <Box>
+                              {allParticipants.length > 0 &&
+                              Object.keys(allParticipants[0]).some(
+                                (val) => user.username === val
+                              ) ? (
+                                Object.values(timeToStart).every(
+                                  (val) => val === 0
+                                ) ? (
+                                  <Button
+                                    p="20px 40px"
+                                    fontSize="18px"
+                                    w="100%"
+                                    onClick={() =>
+                                      history.push(
+                                        `${ROUTERS.CONTEST}/${id}/start`
+                                      )
+                                    }
+                                  >
+                                    Start
+                                  </Button>
+                                ) : (
+                                  <Box>
+                                    <Text fontSize="18px" textAlign="center">
+                                      Contest will start in:
+                                      <br />
+                                      {`${
+                                        timeToStart.days < 10
+                                          ? `0${timeToStart.days}`
+                                          : timeToStart.days
+                                      } d : ${
+                                        timeToStart.hours < 10
+                                          ? `0${timeToStart.hours}`
+                                          : timeToStart.hours
+                                      } h : ${
+                                        timeToStart.minutes < 10
+                                          ? `0${timeToStart.minutes}`
+                                          : timeToStart.minutes
+                                      } m : ${
+                                        timeToStart.seconds < 10
+                                          ? `0${timeToStart.seconds}`
+                                          : timeToStart.seconds
+                                      } s`}
+                                    </Text>
+                                  </Box>
+                                )
+                              ) : checkPastContest(
+                                  contestDetail.time_regist
+                                ) ? (
                                 <Box>
                                   <Text fontSize="18px" textAlign="center">
-                                    Contest will start in:
-                                    <br />
-                                    {`${
-                                      timeToStart.days < 10
-                                        ? `0${timeToStart.days}`
-                                        : timeToStart.days
-                                    } d : ${
-                                      timeToStart.hours < 10
-                                        ? `0${timeToStart.hours}`
-                                        : timeToStart.hours
-                                    } h : ${
-                                      timeToStart.minutes < 10
-                                        ? `0${timeToStart.minutes}`
-                                        : timeToStart.minutes
-                                    } m : ${
-                                      timeToStart.seconds < 10
-                                        ? `0${timeToStart.seconds}`
-                                        : timeToStart.seconds
-                                    } s`}
+                                    Contest has been started, can not register.
                                   </Text>
                                 </Box>
-                              )
-                            ) : checkPastContest(contestDetail.time_regist) ? (
-                              <Box>
-                                <Text fontSize="18px" textAlign="center">
-                                  Contest has been started, can not register.
-                                </Text>
-                              </Box>
-                            ) : (
+                              ) : (
+                                <Box>
+                                  <Button
+                                    p="20px 40px"
+                                    fontSize="18px"
+                                    w="100%"
+                                    onClick={handleSignUpContest}
+                                  >
+                                    Register
+                                  </Button>
+                                </Box>
+                              )}
                               <Box>
                                 <Button
-                                  p="20px 40px"
-                                  fontSize="18px"
                                   w="100%"
-                                  onClick={handleSignUpContest}
+                                  p="20px 40px"
+                                  mt="20px"
+                                  fontSize="18px"
+                                  onClick={() => {
+                                    history.push(ROUTERS.HOME);
+                                  }}
                                 >
-                                  Register
+                                  Back to see all
                                 </Button>
                               </Box>
-                            )}
-                            <Box>
-                              <Button
-                                w="100%"
-                                p="20px 40px"
-                                mt="20px"
-                                fontSize="18px"
-                                onClick={() => {
-                                  history.push(ROUTERS.HOME);
-                                }}
-                              >
-                                Back to see all
-                              </Button>
                             </Box>
-                          </Box>
-                        )}
-                        {checkUpcomingContest(contestDetail.time_regist) && (
-                          <>
-                            <Box mb="20px">
-                              <Text fontSize="18px">
-                                Not a time for register
-                              </Text>
-                            </Box>
+                          )}
+                          {checkUpcomingContest(contestDetail.time_regist) && (
+                            <>
+                              <Box mb="20px">
+                                <Text fontSize="18px">
+                                  Not a time for register
+                                </Text>
+                              </Box>
 
-                            <Box>
-                              <Button
-                                w="100%"
-                                p="20px 40px"
-                                fontSize="18px"
-                                onClick={() => {
-                                  history.push(ROUTERS.HOME);
-                                }}
-                              >
-                                Back to see all
-                              </Button>
-                            </Box>
-                          </>
-                        )}
-                      </Box>
+                              <Box>
+                                <Button
+                                  w="100%"
+                                  p="20px 40px"
+                                  fontSize="18px"
+                                  onClick={() => {
+                                    history.push(ROUTERS.HOME);
+                                  }}
+                                >
+                                  Back to see all
+                                </Button>
+                              </Box>
+                            </>
+                          )}
+                        </Box>
+                      )}
                     </HStack>
                   </Box>
                 </TabPanel>

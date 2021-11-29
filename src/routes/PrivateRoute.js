@@ -9,10 +9,13 @@ function PrivateRoute({ admin, ...rest }) {
   const location = useLocation();
 
   if (isObject(data)) {
-    if (data.role === "admin") {
-      if (location.pathname !== ROUTERS.ADMIN)
-        return <Redirect to={ROUTERS.ADMIN} />;
-      return <Route {...rest} />;
+    if (data.role === "admin" || data.role === "creator") {
+      if (
+        location.pathname === ROUTERS.ADMIN ||
+        location.pathname.includes("contest")
+      )
+        return <Route {...rest} />;
+      return <Redirect to={ROUTERS.ADMIN} />;
     } else {
       if (location.pathname === ROUTERS.ADMIN)
         return <Redirect to={ROUTERS.HOME} />;

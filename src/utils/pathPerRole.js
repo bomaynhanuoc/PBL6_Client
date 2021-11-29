@@ -6,6 +6,8 @@ function pathPerRole(data) {
     switch (data.role) {
       case "admin":
         return ROUTERS.ADMIN;
+      case "creator":
+        return ROUTERS.ADMIN;
       default:
         return ROUTERS.HOME;
     }
