@@ -45,7 +45,7 @@ function AddContest({
             <Box>
               {isUpdate && (
                 <FormControl id="id" mb="30px">
-                  <FormLabel fontSize="18px">Title</FormLabel>
+                  <FormLabel fontSize="18px">ID</FormLabel>
                   <Input
                     name="id"
                     type="text"
@@ -195,21 +195,25 @@ function AddContest({
                   step="2"
                 />
               </FormControl>
-              <FormControl id="language" mb="30px">
-                <FormLabel fontSize="18px">Language</FormLabel>
-                <Select
-                  isMulti
-                  options={
-                    languages.length > 0
-                      ? languages.map((val) => ({
-                          value: val.name,
-                          label: val.name,
-                        }))
-                      : []
-                  }
-                  onChange={onChange}
-                />
-              </FormControl>
+              {!isUpdate && (
+                <FormControl id="language" mb="30px">
+                  <FormLabel fontSize="18px">Language</FormLabel>
+                  <Select
+                    closeMenuOnSelect={false}
+                    isMulti
+                    options={
+                      languages.length > 0
+                        ? languages.map((val) => ({
+                            value: val.name,
+                            label: val.name,
+                          }))
+                        : []
+                    }
+                    defaultValue={selectedContest.language}
+                    onChange={onChange}
+                  />
+                </FormControl>
+              )}
               <FormControl id="timeOut" mb="30px">
                 <FormLabel fontSize="18px">Time out</FormLabel>
                 <Input

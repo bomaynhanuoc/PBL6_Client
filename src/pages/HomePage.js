@@ -45,15 +45,19 @@ const HomePage = () => {
   function renderContestByTime(timeId) {
     switch (timeId) {
       case 0:
-        return contests.filter((item) => checkPastContest(item.time_end));
+        return contests.length > 0
+          ? contests.filter((item) => checkPastContest(item.time_end))
+          : [];
       case 1:
-        return contests.filter((item) =>
-          checkCurrentContest(item.time_regist, item.time_end)
-        );
+        return contests.length > 0
+          ? contests.filter((item) =>
+              checkCurrentContest(item.time_regist, item.time_end)
+            )
+          : [];
       case 2:
-        return contests.filter((item) =>
-          checkUpcomingContest(item.time_regist)
-        );
+        return contests.length > 0
+          ? contests.filter((item) => checkUpcomingContest(item.time_regist))
+          : [];
       default:
         return;
     }

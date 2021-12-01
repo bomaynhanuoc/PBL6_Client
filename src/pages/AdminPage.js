@@ -16,11 +16,7 @@ import { useToast } from "@chakra-ui/toast";
 import { useDisclosure } from "@chakra-ui/hooks";
 import AddAccount from "../components/AddAccount";
 import { registerAccount } from "../slices/authSlice";
-import {
-  addContest,
-  getAllContest,
-  removeContest,
-} from "../slices/contestSlice";
+import { addContest, getAllContest } from "../slices/contestSlice";
 import {
   getAllLanguages,
   updateLanguageByField,

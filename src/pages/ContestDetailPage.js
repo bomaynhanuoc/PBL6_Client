@@ -8,16 +8,21 @@ import { Button, ButtonGroup } from "@chakra-ui/button";
 import { useToast } from "@chakra-ui/toast";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/tabs";
 import { Table, Tbody, Thead, Tr, Th, Td } from "@chakra-ui/table";
+import { useDisclosure } from "@chakra-ui/hooks";
 
 import Layout from "../components/Layout";
 import ConfirmDelete from "../components/ConfirmDelete";
+import AddContest from "../components/AddContest";
 
 import {
   getContestDetail,
   resetError,
   signUpContest,
   removeContest,
+  updateContestByField,
 } from "../slices/contestSlice";
+import { getAllLanguages } from "../slices/languageSlice";
+
 import {
   calculateRemainingTime,
   checkCurrentContest,
@@ -27,6 +32,7 @@ import {
   formatName,
   isObject,
 } from "../utils";
+
 import { ROUTERS } from "../constants/routers";
 
 function ContestDetailPage() {
@@ -37,6 +43,7 @@ function ContestDetailPage() {
     (state) => state.contest
   );
   const user = useSelector((state) => state.auth.data);
+  const { languages } = useSelector((state) => state.language);
   const toast = useToast();
   const [tabId, setTabId] = useState(0);
   const history = useHistory();
@@ -52,9 +59,32 @@ function ContestDetailPage() {
   const allParticipants =
     Array.isArray(participantsField) &&
     participantsField.filter((val) => isObject(val));
+  const [updateContest, setUpdateContest] = useState({
+    id: "",
+    title: "",
+    description: "",
+    content: "",
+    dataTrain: "",
+    dataTest: "",
+    tester: "",
+    dateRegist: "",
+    timeRegist: "",
+    dateStart: "",
+    timeStart: "",
+    dateEnd: "",
+    timeEnd: "",
+    // language: [],
+    timeOut: "",
+  });
+  const {
+    isOpen: isConOpen,
+    onOpen: onConOpen,
+    onClose: onConClose,
+  } = useDisclosure();
 
   useEffect(() => {
     dispatch(getContestDetail({ id, token: user.token }));
+    dispatch(getAllLanguages());
   }, [dispatch, id, user.token]);
 
   const admin = location.state ? location.state.isAdmin : false;
@@ -79,8 +109,34 @@ function ContestDetailPage() {
   }, [dispatch, error, toast]);
 
   useEffect(() => {
-    if (!admin) {
-      if (isObject(contestDetail)) {
+    if (isObject(contestDetail)) {
+      if (admin) {
+        const dateTimeRegist = contestDetail.time_regist.split(" ");
+        const dateTimeStart = contestDetail.time_start.split(" ");
+        const dateTimeEnd = contestDetail.time_end.split(" ");
+        const formattedContestDetail = {
+          id: contestDetail.id,
+          title: contestDetail.title,
+          description: contestDetail.description,
+          content: contestDetail.link_contest,
+          dataTrain: contestDetail.link_datatrain,
+          dataTest: contestDetail.link_datatest,
+          tester: contestDetail.link_tester,
+          dateRegist: dateTimeRegist[0].split("-").reverse().join("-"),
+          timeRegist: dateTimeRegist[1],
+          dateStart: dateTimeStart[0].split("-").reverse().join("-"),
+          timeStart: dateTimeStart[1],
+          dateEnd: dateTimeEnd[0].split("-").reverse().join("-"),
+          timeEnd: dateTimeEnd[1],
+          // language: contestDetail.language.map((lang) => ({
+          //   value: lang,
+          //   label: lang,
+          // })),
+          timeOut: contestDetail.time_out,
+        };
+
+        setUpdateContest(formattedContestDetail);
+      } else {
         const timeInterval = setInterval(() => {
           const remainingTime = calculateRemainingTime(
             new Date().getTime(),
@@ -106,6 +162,78 @@ function ContestDetailPage() {
     }
   }, [admin, contestDetail]);
 
+  const onChange = (e) => {
+    if (Array.isArray(e)) {
+      setUpdateContest((prev) => ({
+        ...prev,
+        language: e.map((val) => val.value),
+      }));
+    } else if (e.target.files) {
+      setUpdateContest((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.files[0],
+      }));
+    } else {
+      setUpdateContest((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
+    }
+  };
+
+  const handleContest = async (e) => {
+    e.preventDefault();
+
+    if (
+      Object.values(updateContest)
+        .splice(1)
+        .some((val) => val.length === 0)
+    ) {
+      toast({
+        title: "All fields must not be empty",
+        status: "error",
+        duration: 2000,
+        position: "top-right",
+      });
+      return;
+    } else {
+      console.log(updateContest);
+      onConClose();
+
+      const dateTimeRegist = `${updateContest.dateRegist} ${updateContest.timeRegist}`;
+      const dateTimeStart = `${updateContest.dateStart} ${updateContest.timeStart}`;
+      const dateTimeEnd = `${updateContest.dateEnd} ${updateContest.timeEnd}`;
+      const formData = new FormData();
+
+      formData.append("id", updateContest.id);
+      formData.append("token", user.token);
+      formData.append("title", updateContest.title);
+      formData.append("description", updateContest.description);
+      formData.append("contest", updateContest.content);
+      formData.append("data_train", updateContest.dataTrain);
+      formData.append("data_test", updateContest.dataTest);
+      formData.append("tester", updateContest.tester);
+      formData.append("time_regist", dateTimeRegist);
+      formData.append("time_start", dateTimeStart);
+      formData.append("time_end", dateTimeEnd);
+      // formData.append("language", JSON.stringify(updateContest.language));
+      formData.append("time_out", updateContest.timeOut);
+
+      const response = await dispatch(updateContestByField(formData));
+
+      if (response.payload.includes("Successfully")) {
+        toast({
+          title: response.payload,
+          status: "success",
+          duration: 2000,
+          position: "bottom-right",
+        });
+
+        history.replace(ROUTERS.ADMIN);
+      }
+    }
+  };
+
   const handleSignUpContest = async () => {
     await dispatch(
       signUpContest({
@@ -117,7 +245,7 @@ function ContestDetailPage() {
     await dispatch(getContestDetail({ id }));
   };
 
-  console.log(contestDetail);
+  console.log(updateContest);
 
   return (
     <Layout>
@@ -180,41 +308,59 @@ function ContestDetailPage() {
                         })}
                       </Box>
                       {admin ? (
-                        <Box
-                          w="30%"
-                          ml="20px !important"
-                          p="20px"
-                          border="1px solid black"
-                          borderRadius="8px"
-                        >
-                          <ButtonGroup flexDir="column" w="100%">
-                            <Button mb="20px" colorScheme="messenger">
-                              Update
-                            </Button>
-                            <ConfirmDelete
-                              selectedItem={contestDetail}
-                              handleDelete={async ({ id }) => {
-                                const response = await dispatch(
-                                  removeContest({
-                                    token: user.token,
-                                    id,
-                                  })
-                                );
+                        <>
+                          <Box
+                            w="30%"
+                            ml="20px !important"
+                            p="20px"
+                            border="1px solid black"
+                            borderRadius="8px"
+                          >
+                            <ButtonGroup flexDir="column" w="100%">
+                              <Button
+                                mb="20px"
+                                colorScheme="messenger"
+                                onClick={() => onConOpen()}
+                              >
+                                Update
+                              </Button>
+                              <ConfirmDelete
+                                selectedItem={contestDetail}
+                                handleDelete={async ({ id }) => {
+                                  const response = await dispatch(
+                                    removeContest({
+                                      token: user.token,
+                                      id,
+                                    })
+                                  );
 
-                                if (response.payload.includes("Successfully")) {
-                                  toast({
-                                    title: response.payload,
-                                    status: "success",
-                                    duration: 2000,
-                                    position: "bottom-right",
-                                  });
-                                }
+                                  if (
+                                    response.payload.includes("Successfully")
+                                  ) {
+                                    toast({
+                                      title: response.payload,
+                                      status: "success",
+                                      duration: 2000,
+                                      position: "bottom-right",
+                                    });
+                                  }
 
-                                history.replace(ROUTERS.ADMIN);
-                              }}
+                                  history.replace(ROUTERS.ADMIN);
+                                }}
+                              />
+                            </ButtonGroup>
+                          </Box>
+                          {+updateContest.id > 0 && (
+                            <AddContest
+                              isOpen={isConOpen}
+                              onClose={onConClose}
+                              onChange={onChange}
+                              languages={languages}
+                              selectedContest={updateContest}
+                              handleContest={handleContest}
                             />
-                          </ButtonGroup>
-                        </Box>
+                          )}
+                        </>
                       ) : (
                         <Box
                           w="30%"
