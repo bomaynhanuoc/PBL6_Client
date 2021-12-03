@@ -489,12 +489,12 @@ function AdminPage() {
           token: data.token,
         })
       );
-      dispatch(getAllLanguages());
     }
   }, [data, dispatch]);
 
   useEffect(() => {
     dispatch(getAllContest());
+    dispatch(getAllLanguages());
   }, [dispatch]);
 
   // console.log(selectedContest);
