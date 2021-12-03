@@ -246,6 +246,10 @@ function ContestDetailPage() {
   };
 
   console.log(updateContest);
+  console.log(
+    isObject(contestDetail) &&
+      checkCurrentContest(contestDetail.time_regist, contestDetail.time_end)
+  );
 
   return (
     <Layout>
@@ -456,9 +460,7 @@ function ContestDetailPage() {
                                     </Text>
                                   </Box>
                                 )
-                              ) : checkPastContest(
-                                  contestDetail.time_regist
-                                ) ? (
+                              ) : checkPastContest(contestDetail.time_start) ? (
                                 <Box>
                                   <Text fontSize="18px" textAlign="center">
                                     Contest has been started, can not register.

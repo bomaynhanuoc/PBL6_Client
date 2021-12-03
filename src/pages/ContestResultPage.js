@@ -34,6 +34,7 @@ function ContestResultPage() {
     }
   }, [submits]);
 
+  console.log(submits);
   console.log(contestDetail);
 
   return (
