@@ -182,43 +182,77 @@ function AdminPage() {
   }));
 
   const onChange = (e) => {
-    switch (chosenItem) {
-      case 0:
-        setOldValue((prev) => ({
-          ...prev,
-          [e.target.name || "role"]: e.target.value,
-        }));
-        break;
+    if (data.role === "admin") {
+      switch (chosenItem) {
+        case 0:
+          setOldValue((prev) => ({
+            ...prev,
+            [e.target.name || "role"]: e.target.value,
+          }));
+          break;
 
-      case 1:
-        // console.log(selectedContest);
-        if (Array.isArray(e)) {
-          setSelectedContest((prev) => ({
-            ...prev,
-            language: e.map((val) => val.value),
-          }));
-        } else if (e.target.files) {
-          setSelectedContest((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.files[0],
-          }));
-        } else {
-          setSelectedContest((prev) => ({
+        case 1:
+          // console.log(selectedContest);
+          if (Array.isArray(e)) {
+            setSelectedContest((prev) => ({
+              ...prev,
+              language: e.map((val) => val.value),
+            }));
+          } else if (e.target.files) {
+            setSelectedContest((prev) => ({
+              ...prev,
+              [e.target.name]: e.target.files[0],
+            }));
+          } else {
+            setSelectedContest((prev) => ({
+              ...prev,
+              [e.target.name]: e.target.value,
+            }));
+          }
+          break;
+
+        case 2:
+          setSelectedLang((prev) => ({
             ...prev,
             [e.target.name]: e.target.value,
           }));
-        }
-        break;
+          break;
 
-      case 2:
-        setSelectedLang((prev) => ({
-          ...prev,
-          [e.target.name]: e.target.value,
-        }));
-        break;
+        default:
+          break;
+      }
+    } else if (data.role === "creator") {
+      switch (chosenItem) {
+        case 0:
+          // console.log(selectedContest);
+          if (Array.isArray(e)) {
+            setSelectedContest((prev) => ({
+              ...prev,
+              language: e.map((val) => val.value),
+            }));
+          } else if (e.target.files) {
+            setSelectedContest((prev) => ({
+              ...prev,
+              [e.target.name]: e.target.files[0],
+            }));
+          } else {
+            setSelectedContest((prev) => ({
+              ...prev,
+              [e.target.name]: e.target.value,
+            }));
+          }
+          break;
 
-      default:
-        break;
+        case 1:
+          setSelectedLang((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+          }));
+          break;
+
+        default:
+          break;
+      }
     }
   };
 
@@ -559,7 +593,7 @@ function AdminPage() {
           p="20px 0"
         >
           <SidebarList
-            items={data.role !== "admin" ? items.splice(1) : items}
+            items={data.role !== "admin" ? [items[1]] : items}
             chosenItem={chosenItem}
             handleChooseItem={handleChooseItem}
           />
@@ -621,6 +655,23 @@ function AdminPage() {
                   if (data.role === "creator") {
                     if (chosenItem === 0) {
                       onConOpen();
+                      setSelectedContest({
+                        id: "",
+                        title: "",
+                        description: "",
+                        content: "",
+                        dataTrain: "",
+                        dataTest: "",
+                        tester: "",
+                        dateRegist: "",
+                        timeRegist: "",
+                        dateStart: "",
+                        timeStart: "",
+                        dateEnd: "",
+                        timeEnd: "",
+                        language: [],
+                        timeOut: "",
+                      });
                     }
                   }
                 }}
@@ -629,7 +680,7 @@ function AdminPage() {
               </Button>
             </Box>
             {data.role !== "admin"
-              ? renderDataByItem(chosenItem + 1)
+              ? renderDataByItem(1)
               : renderDataByItem(chosenItem)}
           </Box>
         </Stack>

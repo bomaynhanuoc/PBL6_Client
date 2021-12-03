@@ -27,7 +27,7 @@ const HomePage = () => {
   useToastInfo();
 
   useEffect(() => {
-    if (data.role === "admin") {
+    if (data.role === "admin" || data.role === "creator") {
       history.replace(ROUTERS.ADMIN);
     }
   }, [history, data]);
