@@ -1,16 +1,22 @@
 import React from "react";
-import { Box, Text } from "@chakra-ui/layout";
+import { Box, Heading } from "@chakra-ui/layout";
 import Layout from "../components/Layout";
 import PageList from "../components/PageList";
-import List from "../components/List";
+// import List from "../components/List";
+import { allContestTabs } from "../constants/allContestTabs";
 
 function ProblemsPage() {
   return (
     <Layout>
       <Box as="main" mt="40px">
-        <PageList>
+        <Box mb="20px">
+          <Heading as="h4" fontSize="30px">
+            All contests
+          </Heading>
+        </Box>
+        <PageList tabs={allContestTabs}>
           <Box mt="20px" ml="16px">
-            <Text as="h4" fontSize="20px" mb="18px">
+            {/* <Text as="h4" fontSize="20px" mb="18px">
               All problems
             </Text>
             <List
@@ -41,7 +47,7 @@ function ProblemsPage() {
                   submit: "submit",
                 },
               ]}
-            />
+            /> */}
           </Box>
         </PageList>
       </Box>

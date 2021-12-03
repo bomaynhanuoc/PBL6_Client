@@ -1,6 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as ReachLink, NavLink as ReachNavLink } from "react-router-dom";
+import {
+  Link as ReachLink,
+  NavLink as ReachNavLink,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import { HStack, Box, Link, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { Spinner } from "@chakra-ui/spinner";
@@ -8,16 +13,22 @@ import { ROUTERS } from "../constants/routers";
 
 import "./Header.css";
 import { logoutAccount } from "../slices/authSlice";
+import { isObject } from "../utils";
 
 const Header = () => {
   const linkItems = [ROUTERS.LOGIN, ROUTERS.REGISTER];
   const user = useSelector((state) => state.auth.data);
   const loading = useSelector((state) => state.common.loading);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
 
   const handleClick = async () => {
     try {
       await dispatch(logoutAccount({ username: user.username }));
+      if (location.pathname !== ROUTERS.HOME) {
+        history.push(ROUTERS.HOME);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -42,7 +53,7 @@ const Header = () => {
           </Link>
         </Box>
         <Box>
-          {user && user.username ? (
+          {isObject(user) ? (
             <HStack justify="space-between" fontSize="18px">
               <Text mr="10px">Welcome, {user.username}</Text>
               <Button
@@ -60,7 +71,7 @@ const Header = () => {
               </Button>
             </HStack>
           ) : (
-            <Box as="ul" display="flex">
+            <Box as="ul" display="flex" listStyleType="none">
               {linkItems.map((item) => (
                 <Box as="li" key={item}>
                   <Link

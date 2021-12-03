@@ -1,32 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, Tab, TabList } from "@chakra-ui/tabs";
 import { Link, useLocation } from "react-router-dom";
-import { ROUTERS } from "../constants/routers";
 
-function PageList({ children }) {
+function PageList({ tabs, children }) {
   const location = useLocation();
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState();
 
   useEffect(() => {
-    switch (location.pathname) {
-      case ROUTERS.HOME:
-        setTabIndex(0);
-        break;
-      case ROUTERS.CONTESTS:
-        setTabIndex(1);
-        break;
-      case ROUTERS.PROBLEMS:
-        setTabIndex(2);
-        break;
-      default:
-        return;
-    }
-  }, [location.pathname]);
+    setTabIndex(tabs.findIndex((tab) => tab.link === location.pathname));
+    // switch (location.pathname) {
+    //   case ROUTERS.HOME:
+    //     setTabIndex(0);
+    //     break;
+    //   case ROUTERS.CONTESTS:
+    //     setTabIndex(1);
+    //     break;
+    //   case ROUTERS.PROBLEMS:
+    //     setTabIndex(2);
+    //     break;
+    //   default:
+    //     return;
+    // }
+  }, [tabs, location.pathname]);
 
   return (
     <Tabs isLazy index={tabIndex}>
       <TabList>
-        <Link to={ROUTERS.HOME}>
+        {tabs.map((tab, idx) => (
+          <Link key={idx} to={tab.link}>
+            <Tab textTransform="uppercase">{tab.name}</Tab>
+          </Link>
+        ))}
+        {/* <Link to={ROUTERS.HOME}>
           <Tab textTransform="uppercase">Home</Tab>
         </Link>
         <Link to={ROUTERS.CONTESTS}>
@@ -34,7 +39,7 @@ function PageList({ children }) {
         </Link>
         <Link to={ROUTERS.PROBLEMS}>
           <Tab textTransform="uppercase">Problems</Tab>
-        </Link>
+        </Link> */}
       </TabList>
       {children}
     </Tabs>
